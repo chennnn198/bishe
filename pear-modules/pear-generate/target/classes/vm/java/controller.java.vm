@@ -1,0 +1,101 @@
+package ${packageName}.controller;
+
+import com.github.pagehelper.PageInfo;
+import ${packageName}.domain.${ClassName};
+import com.pearadmin.common.tools.string.Convert;
+import com.pearadmin.common.web.base.BaseController;
+import com.pearadmin.common.web.domain.request.PageDomain;
+import com.pearadmin.common.web.domain.response.Result;
+import com.pearadmin.common.web.domain.response.module.ResultTable;
+import com.pearadmin.system.domain.SysUser;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import ${packageName}.service.I${ClassName}Service;
+
+/**
+ * ${functionName}Controller
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+@RestController
+@RequestMapping("/${moduleName}/${businessName}")
+public class ${ClassName}Controller extends BaseController {
+
+    private String prefix = "${moduleName}/${businessName}";
+
+    @Autowired
+    private I${ClassName}Service ${className}Service;
+
+    @GetMapping("/main")
+    public ModelAndView main() {
+        return jumpPage(prefix + "/main");
+    }
+
+    /**
+     * 查询${functionName}列表
+     */
+    @ResponseBody
+    @GetMapping("/data")
+    public ResultTable list(@ModelAttribute ${ClassName} ${className}, PageDomain pageDomain) {
+        PageInfo<${ClassName}> pageInfo = ${className}Service.select${ClassName}Page(${className}, pageDomain);
+        return pageTable(pageInfo.getList(), pageInfo.getTotal());
+    }
+
+    /**
+     * 新增${functionName}
+     */
+    @GetMapping("/add")
+    public ModelAndView add() {
+        return jumpPage(prefix + "/add");
+    }
+
+    /**
+     * 新增保存${functionName}
+     */
+    @ResponseBody
+    @PostMapping("/save")
+    public Result save(@RequestBody ${ClassName} ${className}) {
+        return decide(${className}Service.insert${ClassName}(${className}));
+    }
+
+    /**
+     * 修改${functionName}
+     */
+    @GetMapping("/edit")
+    public ModelAndView edit(${pkColumn.javaType} ${pkColumn.javaField}, ModelMap mmap) {
+        ${ClassName} ${className} =${className}Service.select${ClassName}ById(${pkColumn.javaField});
+        mmap.put("${className}", ${className});
+        return jumpPage(prefix + "/edit");
+    }
+
+    /**
+     * 修改保存${functionName}
+     */
+    @ResponseBody
+    @PutMapping("/update")
+    public Result update(@RequestBody ${ClassName} ${className}) {
+        return decide(${className}Service.update${ClassName}(${className}));
+    }
+
+    /**
+     * 删除${functionName}
+     */
+    @ResponseBody
+    @DeleteMapping("/batchRemove")
+    public Result batchRemove(String ids) {
+        return decide(${className}Service.delete${ClassName}ByIds(Convert.toStrArray(ids)));
+    }
+
+    /**
+     * 删除
+     */
+    @ResponseBody
+    @DeleteMapping("/remove/{${pkColumn.javaField}}")
+    public Result remove(@PathVariable("${pkColumn.javaField}") ${pkColumn.javaType} ${pkColumn.javaField}) {
+        return decide(${className}Service.delete${ClassName}ById(${pkColumn.javaField}));
+    }
+}
