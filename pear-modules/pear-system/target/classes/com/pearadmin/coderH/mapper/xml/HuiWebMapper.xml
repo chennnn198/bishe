@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pearadmin.coderH.mapper.HuiWebMapper">
+    <resultMap type="HuiWeb" id="HuiWebResult">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="descinfo" column="descinfo"/>
+        <result property="url" column="url"/>
+        <result property="zt" column="zt"/>
+        <result property="user" column="user"/>
+    </resultMap>
+
+    <sql id="selectHuiWebVo">
+        select `id`, `name`, `descinfo`, `url`, `zt`,`user`
+        from `hui_web`
+    </sql>
+
+    <select id="selectHuiWebList" parameterType="HuiWeb" resultMap="HuiWebResult">
+        <include refid="selectHuiWebVo"/>
+        <where>
+            <if test="name != null  and name != ''">
+                and
+                `name` like concat('%', #{name}, '%')
+            </if>
+            <if test="user != null  and user != ''">
+                and
+                `user` = #{user}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectHuiWebById" parameterType="Long"
+            resultMap="HuiWebResult">
+        <include refid="selectHuiWebVo"/>
+        where `id` = #{id}
+    </select>
+
+    <insert id="insertHuiWeb" parameterType="HuiWeb" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into `hui_web`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                `name`,
+            </if>
+            <if test="descinfo != null">
+                `descinfo`,
+            </if>
+            <if test="url != null">
+                `url`,
+            </if>
+            <if test="zt != null">
+                `zt`,
+            </if>
+            <if test="user != null">
+                `user`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="name != null">
+                #{name},
+            </if>
+            <if test="descinfo != null">
+                #{descinfo},
+            </if>
+            <if test="url != null">
+                #{url},
+            </if>
+            <if test="zt != null">
+                #{zt},
+            </if>
+            <if test="user != null">
+                #{user},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateHuiWeb" parameterType="HuiWeb">
+        update `hui_web`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="name != null">
+                `name` =
+                    #{name},
+            </if>
+            <if test="descinfo != null">
+                `descinfo` =
+                    #{descinfo},
+            </if>
+            <if test="url != null">
+                `url` =
+                    #{url},
+            </if>
+            <if test="zt != null">
+                `zt` =
+                    #{zt},
+            </if>
+        </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteHuiWebById" parameterType="Long">
+        delete
+        from `hui_web`
+        where `id` = #{id}
+    </delete>
+
+    <delete id="deleteHuiWebByIds" parameterType="String">
+        delete
+        from `hui_web` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

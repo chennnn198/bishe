@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pearadmin.coderH.mapper.HuiScanMapper">
+    <resultMap type="HuiScan" id="HuiScanResult">
+        <result property="id" column="id"/>
+        <result property="webid" column="webid"/>
+        <result property="webname" column="webname"/>
+        <result property="url" column="url"/>
+        <result property="leaktype" column="leaktype"/>
+        <result property="leaklvl" column="leaklvl"/>
+        <result property="user" column="user"/>
+    </resultMap>
+
+    <sql id="selectHuiScanVo">
+        select `id`, `webid`, `webname`, `url`, `leaktype`, `leaklvl`,`user`
+        from `hui_scan`
+    </sql>
+
+    <select id="selectHuiScanList" parameterType="HuiScan" resultMap="HuiScanResult">
+        <include refid="selectHuiScanVo"/>
+        <where>
+            <if test="webid != null  and webid != ''">
+                and
+                `webid` = #{webid}
+            </if>
+            <if test="user != null  and user != ''">
+                and
+                `user` = #{user}
+            </if>
+        </where>
+        order by scantime desc
+    </select>
+
+    <select id="selectHuiScanById" parameterType="Long"
+            resultMap="HuiScanResult">
+        <include refid="selectHuiScanVo"/>
+        where `id` = #{id}
+    </select>
+
+    <insert id="insertHuiScan" parameterType="HuiScan" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into `hui_scan`
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="webid != null">
+                `webid`,
+            </if>
+            <if test="webname != null">
+                `webname`,
+            </if>
+            <if test="url != null">
+                `url`,
+            </if>
+            <if test="leaktype != null">
+                `leaktype`,
+            </if>
+            <if test="leaklvl != null">
+                `leaklvl`,
+            </if>
+            <if test="user != null">
+                `user`,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="webid != null">
+                #{webid},
+            </if>
+            <if test="webname != null">
+                #{webname},
+            </if>
+            <if test="url != null">
+                #{url},
+            </if>
+            <if test="leaktype != null">
+                #{leaktype},
+            </if>
+            <if test="leaklvl != null">
+                #{leaklvl},
+            </if>
+            <if test="user != null">
+                #{user},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateHuiScan" parameterType="HuiScan">
+        update `hui_scan`
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="webid != null">
+                `webid` =
+                    #{webid},
+            </if>
+            <if test="webname != null">
+                `webname` =
+                    #{webname},
+            </if>
+            <if test="url != null">
+                `url` =
+                    #{url},
+            </if>
+            <if test="leaktype != null">
+                `leaktype` =
+                    #{leaktype},
+            </if>
+            <if test="leaklvl != null">
+                `leaklvl` =
+                    #{leaklvl},
+            </if>
+        </trim>
+        where `id` = #{id}
+    </update>
+
+    <delete id="deleteHuiScanById" parameterType="Long">
+        delete
+        from `hui_scan`
+        where `id` = #{id}
+    </delete>
+
+    <delete id="deleteHuiScanByIds" parameterType="String">
+        delete
+        from `hui_scan` where `id` in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
